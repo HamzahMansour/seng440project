@@ -26,76 +26,84 @@ unsigned int pwlog2(unsigned int x)
 int main(int argc, char *argv[])
 {
 	// 14-bit input -> max value = 16383 -->  8-bit output -> max value = 255
-	unsigned int sample_array[] = {0, 60, 100, 250, 666, 1000, 3333, 5555, 10000, 16383};
+	// unsigned int sample_array[] = {0, 60, 100, 250, 666, 1000, 3333, 5555, 10000, 16383};
 	
-	// unsigned int sample_array[1<<14];
-	// for (int i = 0; i < 1<<14; ++i)
-	// {
-	// 	sample_array[i] = i;
-	// }
+	unsigned int sample_array[1<<14];
+	for (int i = 0; i < 1<<14; ++i)
+	{
+		sample_array[i] = i;
+	}
 
 	size_t samples = sizeof(sample_array) / sizeof(sample_array[0]);
+	printf("samples: %lu\n", samples);
 	unsigned int result_array[samples], compare_array[samples], diff_array[samples];
+	int max_index = 0, max = 0;
+	float compare_value;
 
-	// compute result_array
+	// compute result_array, compare_array, and diff_array
 	for (int i = 0; i < samples; ++i)
 	{
 		result_array[i] = pwlog2(sample_array[i]);
-	}
-
-	// compute compare_array and diff_array
-	for (int i = 0; i < samples; ++i)
-	{
-		compare_array[i] = 256*(log2(1+(255*(float)sample_array[i]/16384)))/8;
+		compare_value = round(256*(log2(1+(255*(float)sample_array[i]/16384)))/8);
+		compare_array[i] = (int)compare_value;
 		diff_array[i] = compare_array[i] - result_array[i];
+		if(diff_array[i] > max){
+			max_index = i;
+			max = diff_array[i];
+		}
 	}
 
-	if(argv[1][0] == 'p')
+	printf("max_error: %i\nvalue with max_error: %i\n",max,sample_array[max_index]);
+
+	if(argc > 1)
 	{
-		// print input arry to test
-		printf("sample_array: \t{");
-		for (int k = 0; k < samples-2; ++k)
+		if(argv[1][0] == 'p')
 		{
-			printf("%u,\t",sample_array[k]);
-		}
-		printf("%u}\n",sample_array[samples-1]);
+			// print input arry to test
+			printf("sample_array: \t{");
+			for (int k = 0; k < samples-2; ++k)
+			{
+				printf("%u,\t",sample_array[k]);
+			}
+			printf("%u}\n",sample_array[samples-1]);
 
-		// print output array
-		printf("result_array: \t{");
-		for (int k = 0; k < samples-2; ++k)
-		{
-			printf("%u,\t",result_array[k]);
-		}
-		printf("%u}\n",result_array[samples-1]);
+			// print output array
+			printf("result_array: \t{");
+			for (int k = 0; k < samples-2; ++k)
+			{
+				printf("%u,\t",result_array[k]);
+			}
+			printf("%u}\n",result_array[samples-1]);
 
-		// print compare array
-		printf("compare_array: \t{");
-		for (int k = 0; k < samples-2; ++k)
-		{
-			printf("%u,\t",compare_array[k]);
-		}
-		printf("%u}\n",compare_array[samples-1]);
+			// print compare array
+			printf("compare_array: \t{");
+			for (int k = 0; k < samples-2; ++k)
+			{
+				printf("%u,\t",compare_array[k]);
+			}
+			printf("%u}\n",compare_array[samples-1]);
 
-		// print diff array
-		printf("diff_array: \t{");
-		for (int k = 0; k < samples-2; ++k)
-		{
-			printf("%u,\t",diff_array[k]);
+			// print diff array
+			printf("diff_array: \t{");
+			for (int k = 0; k < samples-2; ++k)
+			{
+				printf("%u,\t",diff_array[k]);
+			}
+			printf("%u}\n",diff_array[samples-1]);
 		}
-		printf("%u}\n",diff_array[samples-1]);
-	}
 
-	// user-input testing
-	if(argv[1][0] == 'i'){
-		unsigned int a, b;
-		while(1){
-			printf( "x = "); 
-			scanf( "%u", &a); 
-			if(a == -1) break;
-			b = pwlog2(a); 
-			printf( "y = %u\n", b);	
-			float c = 256*(log2(1+(255*(float)a/16384)))/8;
-			printf("y': %.0f\n", c);
+		// user-input testing
+		if(argv[1][0] == 'i'){
+			unsigned int a, b;
+			while(1){
+				printf( "x = "); 
+				scanf( "%u", &a); 
+				if(a == -1) break;
+				b = pwlog2(a); 
+				printf( "y = %u\n", b);	
+				float c = 256*(log2(1+(255*(float)a/16384)))/8;
+				printf("y': %.0f\n", c);
+			}
 		}
 	}
 	return 0;
