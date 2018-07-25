@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 	int max_index = 0, max = 0;
 	float compare_value;
 
-	// compute result_array, compare_array, and diff_array
+	// compute result_array, compare_array, diff_array, and error values
 	for (int i = 0; i < samples; ++i)
 	{
 		result_array[i] = pwlog2(sample_array[i]);
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	printf("max_error: %i\nvalue with max_error: %i\n",max,sample_array[max_index]);
+	printf("max_error: %i\nvalue with max_error: %i\naverage_error: %.2f\n",max,sample_array[max_index]);
 
 	if(argc > 1)
 	{
