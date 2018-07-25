@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	printf("max_error: %i\nvalue with max_error: %i\naverage_error: %.2f\n",max,sample_array[max_index]);
+	printf("max_error: %i\nvalue with max_error: %i\n",max,sample_array[max_index]);
 
 	if(argc > 1)
 	{
