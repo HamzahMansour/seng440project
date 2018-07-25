@@ -1,78 +1,102 @@
-#include <stdio.h>
+#include<stdio.h>
+#include<math.h>
 
 // pwlog2 = piecewise log2
-unsigned short int pwlog2(unsigned short int x) 
+unsigned int pwlog2(unsigned int x) 
 {
-	if(x < (1<<6)) 						// x < 2^6 = 64
-		return (0); 					// error
-	if(x < (1<<7)) 						// 2^6 < x < 2^7 = 128
-		return x - (1<<6); 				// x-2^6
-	if(x < (1<<8)) 						// 2^7 < x < 2^8 = 256
-		return ((x+1)>>1); 				// x/2
-	if(x < (1<<9)) 						// 2^8 < x < 2^9 = 512
-		return ((x+2)>>2) + (1<<2);		// x/2^2 + 2^2
-	if(x < (1<<10)) 					// 2^9 < x < 2^10 = 2014
-		return ((x+4)>>3) + (1<<3);		// x/2^3 + 2^3
-	if(x < (1<<11))						// 2^10 < x < 2^11 = 2048
-		return ((x+8)>>4) + (1<<4);		// x/2^4 + 2^4
-	if(x < (1<<12))						// 2^11 < x < 2^12 = 4096
-		return ((x+16)>>5) + (1<<5); 	// x/2^5 + 2^5
-	if(x < (1<<13))						// 2^12 < x < 2^13 = 8192
-		return ((x+32)>>6) + (1<<6); 	// x/2^6 + 2^6
-	if(x < (1<<14))						// 2^13 < x < 2^14 = 16384
-		return ((x+64)>>7) + (1<<7); 	// x/2^7 + 2^7
-	return (0); 						// error if > 2^14
+	if(x<64)
+		return (x*32768) >> 16;
+	if(x<193)
+		return (((x-64)*16257)>>16)+32;
+	if(x<461)
+		return (((x-193)*8128)>>16)+64;
+	if(x<963)
+		return (((x-451)*4096)>>16)+96;
+	if(x<1999)
+		return (((x-963)*2024)>>16)+128;
+	if(x<4047)
+		return (((x-1999)*1024)>>16)+160;
+	if(x<8159)
+		return (((x-4047)*510)>>16)+192;
+	if(x<16384)
+		return (((x-8159)*255)>>16)+224;
+	return -1;
 }
 
-unsigned int compress(unsigned int input)
+int main(int argc, char *argv[])
 {
-	unsigned int compressed_value = pwlog2(input);
-	unsigned int final_value = compressed_value;
-	return final_value;
-}
+	// 14-bit input -> max value = 16383 -->  8-bit output -> max value = 255
+	unsigned int sample_array[] = {0, 60, 100, 250, 666, 1000, 3333, 5555, 10000, 16383};
+	
+	// unsigned int sample_array[1<<14];
+	// for (int i = 0; i < 1<<14; ++i)
+	// {
+	// 	sample_array[i] = i;
+	// }
 
-int main()
-{
-	// audio stream represented as integer array (samples)
-	// 14-bit input -> max value = 16383
-	// 8-bit output -> max value = 256
-	unsigned int samples[] = {10, 69, 420, 1500, 6666, 12222, 16383};
-	unsigned int results[5]; // store resulting compressed audio stream in an integer array
+	size_t samples = sizeof(sample_array) / sizeof(sample_array[0]);
+	unsigned int result_array[samples], compare_array[samples], diff_array[samples];
 
-	int i,j;
-	for (int i = 0; i < 1; ++i)
+	// compute result_array
+	for (int i = 0; i < samples; ++i)
 	{
-		for (int j = 0; i < 7; ++i)
+		result_array[i] = pwlog2(sample_array[i]);
+	}
+
+	// compute compare_array and diff_array
+	for (int i = 0; i < samples; ++i)
+	{
+		compare_array[i] = 256*(log2(1+(255*(float)sample_array[i]/16384)))/8;
+		diff_array[i] = compare_array[i] - result_array[i];
+	}
+
+	if(argv[1][0] == 'p')
+	{
+		// print input arry to test
+		printf("sample_array: \t{");
+		for (int k = 0; k < samples-2; ++k)
 		{
-			results[i] = compress(samples[i]);
+			printf("%u,\t",sample_array[k]);
 		}
-	}
+		printf("%u}\n",sample_array[samples-1]);
 
-	// print input arry to test
-	printf("samples: {");
-	for (int k = 0; k < 6; ++k)
-	{
-		printf("%u,",samples[k]);
-	}
-	printf("%u}\n",samples[6]);
+		// print output array
+		printf("result_array: \t{");
+		for (int k = 0; k < samples-2; ++k)
+		{
+			printf("%u,\t",result_array[k]);
+		}
+		printf("%u}\n",result_array[samples-1]);
 
-	// print output array
-	printf("results: {");
-	for (int k = 0; k < 6; ++k)
-	{
-		printf("%u,",results[k]);
+		// print compare array
+		printf("compare_array: \t{");
+		for (int k = 0; k < samples-2; ++k)
+		{
+			printf("%u,\t",compare_array[k]);
+		}
+		printf("%u}\n",compare_array[samples-1]);
+
+		// print diff array
+		printf("diff_array: \t{");
+		for (int k = 0; k < samples-2; ++k)
+		{
+			printf("%u,\t",diff_array[k]);
+		}
+		printf("%u}\n",diff_array[samples-1]);
 	}
-	printf("%u}\n",results[6]);
 
 	// user-input testing
-	unsigned int a, b;
-	while(1){
-		printf( "a = "); 
-		scanf( "%u", &a); 
-		if(a == -1) break;
-		printf("%u\n", a);
-		b = pwlog2(a); 
-		printf( "log2(a) = %hi\n", b);	
+	if(argv[1][0] == 'i'){
+		unsigned int a, b;
+		while(1){
+			printf( "x = "); 
+			scanf( "%u", &a); 
+			if(a == -1) break;
+			b = pwlog2(a); 
+			printf( "y = %u\n", b);	
+			float c = 256*(log2(1+(255*(float)a/16384)))/8;
+			printf("y': %.0f\n", c);
+		}
 	}
 	return 0;
 }
