@@ -45,5 +45,5 @@ int main(int argc, char *argv[])
 	}
 	end = clock(); // end time recorded
 	time_spent = (double)(end - begin) / CLOCKS_PER_SEC; // compute time taken
-	printf("Time: spend: %fs\n", time_spent);
+	printf("Time spent: %fs\n", time_spent);
 }
