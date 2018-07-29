@@ -1,26 +1,26 @@
-#include<stdio.h>
-#include<math.h>
+#include <stdio.h>
+#include <math.h>
 
-// pwlog2 = piecewise log2
-unsigned int pwlog2(unsigned int x) 
+unsigned int lookup_table[] = {19, 51, 83, 115, 147, 179, 211, 243};
+unsigned int pwlog2(unsigned int x) // pwlog2 = piecewise log2
 {
-	if(x<64)
-		return (x*32768) >> 16;
-	if(x<193)
-		return (((x-64)*16257)>>16)+32;
-	if(x<461)
-		return (((x-193)*8128)>>16)+64;
-	if(x<963)
-		return (((x-451)*4096)>>16)+96;
-	if(x<1999)
-		return (((x-963)*2024)>>16)+128;
-	if(x<4047)
-		return (((x-1999)*1024)>>16)+160;
-	if(x<8159)
-		return (((x-4047)*510)>>16)+192;
-	if(x<16384)
-		return (((x-8159)*255)>>16)+224;
-	return -1;
+	if(x>=16384)
+		return 0;
+	if(x>=8159)
+		return lookup_table[7];
+	if(x>=4047)
+		return lookup_table[6];
+	if(x>=1999)
+		return lookup_table[5];
+	if(x>=963)
+		return lookup_table[4];
+	if(x>=451)
+		return lookup_table[3];
+	if(x>=193)
+		return lookup_table[2];
+	if(x>=64)
+		return lookup_table[1];
+	return lookup_table[0];
 }
 
 int main(int argc, char *argv[])
@@ -33,7 +33,6 @@ int main(int argc, char *argv[])
 	{
 		sample_array[i] = i;
 	}
-
 	size_t samples = sizeof(sample_array) / sizeof(sample_array[0]);
 	printf("samples: %lu\n", samples);
 	unsigned int result_array[samples], compare_array[samples], diff_array[samples];
@@ -46,14 +45,16 @@ int main(int argc, char *argv[])
 		result_array[i] = pwlog2(sample_array[i]);
 		compare_value = round(256*(log2(1+(255*(float)sample_array[i]/16384)))/8);
 		compare_array[i] = (int)compare_value;
-		diff_array[i] = compare_array[i] - result_array[i];
+		if(compare_array[i] > result_array[i])
+			diff_array[i] = compare_array[i] - result_array[i];
+		else diff_array[i] = result_array[i] - compare_array[i];
 		if(diff_array[i] > max){
 			max_index = i;
 			max = diff_array[i];
 		}
 	}
 
-	printf("max_error: %i\nvalue with max_error: %i\n",max,sample_array[max_index]);
+	printf("max_error: %u\nvalue with max_error: %u\n",max,sample_array[max_index]);
 
 	if(argc > 1)
 	{

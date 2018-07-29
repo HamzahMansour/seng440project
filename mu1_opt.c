@@ -5,7 +5,7 @@
 unsigned int pwlog2(unsigned int x) // pwlog2 = piecewise log2
 {
 	if(x>16384)
-		return -1;
+		return 0;
 	if(x>8159)
 		return (((x-8159)*255)>>16)+224;
 	if(x>4047)

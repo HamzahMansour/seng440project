@@ -4,22 +4,22 @@
 
 unsigned int pwlog2(unsigned int x) // pwlog2 = piecewise log2
 {
-	if(x>=16384)
-		return -1;
-	if(x>=8159)
-		return 12271;
-	if(x>=4047)
-		return 6103;
-	if(x>=1999)
-		return 3023;
-	if(x>=963)
-		return 1481;
-	if(x>=451)
-		return 707;
-	if(x>=193)
-		return 322;
-	if(x>=64)
-		return 128;
+	if(x>>14)
+		return 0;
+	if(x>>13)
+		return 243;
+	if(x>>12)
+		return 211;
+	if(x>>11)
+		return 179;
+	if(x>>10)
+		return 147;
+	if(x>>9)
+		return 115;
+	if(x>>8)
+		return 83;
+	if(x>>6)
+		return 51;
 	return 32;
 }
 

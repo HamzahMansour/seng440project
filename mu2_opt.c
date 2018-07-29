@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
-unsigned int lookup_table[] = {32, 128, 322, 707, 1481, 3023, 6103, 12271};
+unsigned int lookup_table[] = {19, 51, 83, 115, 147, 179, 211, 243};
 unsigned int pwlog2(unsigned int x) // pwlog2 = piecewise log2
 {
 	if(x>=16384)
-		return -1;
+		return 0;
 	if(x>=8159)
 		return lookup_table[7];
 	if(x>=4047)

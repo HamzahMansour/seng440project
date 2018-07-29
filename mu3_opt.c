@@ -5,22 +5,22 @@
 unsigned int pwlog2(unsigned int x) // pwlog2 = piecewise log2
 {
 	if(x>=16384)
-		return -1;
+		return 0;
 	if(x>=8159)
-		return 12271;
+		return 243;
 	if(x>=4047)
-		return 6103;
+		return 211;
 	if(x>=1999)
-		return 3023;
+		return 179;
 	if(x>=963)
-		return 1481;
+		return 147;
 	if(x>=451)
-		return 707;
+		return 115;
 	if(x>=193)
-		return 322;
+		return 83;
 	if(x>=64)
-		return 128;
-	return 32;
+		return 51;
+	return 19;
 }
 
 int main(int argc, char *argv[])
