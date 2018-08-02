@@ -20,7 +20,7 @@ unsigned int pwlog2(unsigned int x) // pwlog2 = piecewise log2
 		return 83;
 	if(x>>6)
 		return 51;
-	return 32;
+	return 19;
 }
 
 int main(int argc, char *argv[])

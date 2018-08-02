@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <math.h>
 
-unsigned int lookup_table[] = {19, 51, 83, 115, 147, 179, 211, 243};
 unsigned int pwlog2(unsigned int x) // pwlog2 = piecewise log2
 {
 	if(x<64)
