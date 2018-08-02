@@ -4,23 +4,23 @@
 unsigned int lookup_table[] = {19, 51, 83, 115, 147, 179, 211, 243};
 unsigned int pwlog2(unsigned int x) // pwlog2 = piecewise log2
 {
-	if(x>=16384)
-		return 0;
-	if(x>=8159)
-		return lookup_table[7];
-	if(x>=4047)
-		return lookup_table[6];
-	if(x>=1999)
-		return lookup_table[5];
-	if(x>=963)
-		return lookup_table[4];
-	if(x>=451)
-		return lookup_table[3];
-	if(x>=193)
-		return lookup_table[2];
-	if(x>=64)
-		return lookup_table[1];
-	return lookup_table[0];
+	if(x<64)
+		return (x*32768)>>16;
+	if(x<193)
+		return (((x-64)*16257)>>16)+32;
+	if(x<461)
+		return (((x-193)*8128)>>16)+64;
+	if(x<963)
+		return (((x-451)*4096)>>16)+96;
+	if(x<1999)
+		return (((x-963)*2024)>>16)+128;
+	if(x<4047)
+		return (((x-1999)*1024)>>16)+160;
+	if(x<8159)
+		return (((x-4047)*510)>>16)+192;
+	if(x<16384)
+		return (((x-8159)*255)>>16)+224;
+	return 0;
 }
 
 int main(int argc, char *argv[])
