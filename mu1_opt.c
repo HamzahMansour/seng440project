@@ -23,7 +23,7 @@ unsigned int pwlog2(unsigned int x) // pwlog2 = piecewise log2
 	return (x*32768)>>16;
 }
 
-int main(int argc, char *argv[])
+void main()
 {	// 14-bit input -> max value = 16383 -->  8-bit output -> max value = 255
 	clock_t begin, end;
 	double time_spent;
@@ -38,9 +38,9 @@ int main(int argc, char *argv[])
 	begin = clock(); // start time recorded
 	size_t samples = sizeof(sample_array) / sizeof(sample_array[0]);
 	unsigned int result_array[samples];
-	for (int j = 0; j < 1000000; ++j) // simulate long audio sample
+	for (j = 0; j < 1000000; ++j) // simulate long audio sample
 	{
-		for (int i = 0; i < samples; ++i) // compute result_array
+		for (i = 0; i < samples; ++i) // compute result_array
 			result_array[i] = pwlog2(sample_array[i]);
 	}
 	end = clock(); // end time recorded
