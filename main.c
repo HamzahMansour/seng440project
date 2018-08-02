@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+// this file is for testing purposes only 
 
 unsigned int pwlog2(unsigned int x) // pwlog2 = piecewise log2
 {
