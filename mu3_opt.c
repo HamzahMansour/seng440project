@@ -23,7 +23,7 @@ unsigned int pwlog2(unsigned int x) // pwlog2 = piecewise log2
 	return 19;
 }
 
-void main()
+int main()
 {	// 14-bit input -> max value = 16383 -->  8-bit output -> max value = 255
 	clock_t begin, end;
 	double time_spent;
